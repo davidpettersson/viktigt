@@ -1,4 +1,5 @@
 import hashlib
+from pprint import pprint
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -13,8 +14,13 @@ NS = {
 }
 
 
-def index():
-    return render_to_response('vicky/index.html')
+def index(req):
+    alerts = Alert.objects.all().order_by('-message_received')
+    pprint(alerts)
+    context = {
+        'alerts': alerts,
+    }
+    return render_to_response('vicky/index.html', context)
 
 
 @csrf_exempt
@@ -40,13 +46,23 @@ def alerts(req):
     message_xml = req.body.decode('utf-8')
     print('message_xml: ' + message_xml)
 
-
     root = ET.fromstring(message_xml)
+
+    # ID
     alert_id = root.find('cap:identifier', NS).text
     print('alert_id: ' + alert_id)
 
+    # Sender
+    alert_sender = root.find('cap:sender', NS).text
+    print('alert_sender: ' + alert_sender)
+
+    # Sent
+    #alert_sent = datetime.root.find('cap:sent', NS).text
+    #print('alert_sent: ' + alert_sent)
+
     alert = Alert()
     alert.alert_id = alert_id
+    alert.alert_sender = alert_sender
     alert.message_sha1sum = message_sha1sum
     alert.message_xml = message_xml
     alert.save()

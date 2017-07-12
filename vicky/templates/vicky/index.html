@@ -1,5 +1,31 @@
 {% extends "vicky/_base.html" %}
 {% block title %}Hello World!{% endblock %}
 {% block body %}
-<h1>Hello World!</h1>
+    <div class="container">
+    <div class="row">
+    <h1>Viktigt!</h1>
+
+    <p class="lead">Viktiga meddelanden mottagna från diverse källor.</p>
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Avsändare</th>
+        <th>Sänt</th>
+        <th>Mottaget</th>
+    </tr>
+    </thead>
+        {% for alert in alerts %}
+            <tr>
+                <td><a href="/vicky/alerts/{{ alert.id }}">{{ alert.alert_id }}</a></td>
+                <td>{{ alert.alert_sender }}</td>
+                <td>{{ alert.alert_sent }}</td>
+                <td>{{ alert.message_received }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    </div>
+    </div>
 {% endblock %}
