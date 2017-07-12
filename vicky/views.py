@@ -45,7 +45,7 @@ def alerts(req):
         if existing_alert:
             print('alert with identifier %s already presented and saved' % existing_alert.alert_id)
             existing_alert.save()
-            #return HttpResponse(status=202)
+            return HttpResponse(status=202)
     except ObjectDoesNotExist:
         print('alert does not exists in database')
 
