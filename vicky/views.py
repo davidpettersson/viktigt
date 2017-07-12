@@ -1,6 +1,7 @@
 import hashlib
 from pprint import pprint
 
+import dateutil
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -63,12 +64,13 @@ def alerts(req):
     print('alert_sender: ' + alert_sender)
 
     # Sent
-    #alert_sent = datetime.root.find('cap:sent', NS).text
-    #print('alert_sent: ' + alert_sent)
+    alert_sent = dateutil.parser.parse(root.find('cap:sent', NS).text)
+    print('alert_sent: ' + alert_sent)
 
     alert = Alert()
     alert.alert_id = alert_id
     alert.alert_sender = alert_sender
+    alert.alert_sent = alert_sent
     alert.message_sha1sum = message_sha1sum
     alert.message_xml = message_xml
     alert.save()
