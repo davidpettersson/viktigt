@@ -15,7 +15,7 @@ NS = {
 }
 
 def index(req):
-    alerts = Alert.objects.all().order_by('-message_received')
+    alerts = Alert.objects.all().order_by('-alert_sent')
     pprint(alerts)
     context = {
         'alerts': alerts,
