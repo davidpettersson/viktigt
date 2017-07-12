@@ -1,0 +1,10 @@
+{% extends "vicky/_base.html" %}
+{% block title %}Hello World!{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>Alert {{ alert.id }}</h1>
+<pre>{{ alert.message_xml }}</pre>
+        </div>
+    </div>
+{% endblock %}

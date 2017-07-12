@@ -2,7 +2,7 @@ import hashlib
 from pprint import pprint
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
 import xml.etree.ElementTree as ET
@@ -22,6 +22,12 @@ def index(req):
     }
     return render_to_response('vicky/index.html', context)
 
+def alert_details(req, id):
+    alert = get_object_or_404(Alert, id=id)
+    context = {
+        'alert': alert
+    }
+    return render_to_response('vicky/alert_detail.html', context)
 
 @csrf_exempt
 def alerts(req):
