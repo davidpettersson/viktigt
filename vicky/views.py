@@ -1,7 +1,7 @@
 import hashlib
 from pprint import pprint
 
-import dateutil
+import dateutil.parser
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +13,6 @@ from vicky.models import Alert
 NS = {
     'cap': 'urn:oasis:names:tc:emergency:cap:1.2'
 }
-
 
 def index(req):
     alerts = Alert.objects.all().order_by('-message_received')
@@ -46,7 +45,7 @@ def alerts(req):
         if existing_alert:
             print('alert with identifier %s already presented and saved' % existing_alert.alert_id)
             existing_alert.save()
-            return HttpResponse(status=202)
+            #return HttpResponse(status=202)
     except ObjectDoesNotExist:
         print('alert does not exists in database')
 
@@ -65,7 +64,7 @@ def alerts(req):
 
     # Sent
     alert_sent = dateutil.parser.parse(root.find('cap:sent', NS).text)
-    print('alert_sent: ' + alert_sent)
+    print('alert_sent: ' + alert_sent.isoformat())
 
     alert = Alert()
     alert.alert_id = alert_id
