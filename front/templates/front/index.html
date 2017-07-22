@@ -1,0 +1,70 @@
+{% extends "front/_base.html" %}
+{% block title %}Kritisk Info!{% endblock %}
+{% block head %}
+<style>
+    #mapid { height: 800px; }
+</style>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Kritisk Info!</h1>
+            </div>
+            <div class="col-md-6">
+                <div id="mapid"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="list-group">
+                    {% for alert in alerts %}
+                    <a id="alert-{{ alert.id }}" href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">{{ alert.headline }}</h4>
+                        <p class="list-group-item-text">{{ alert.description }}</p>
+                        <p class="list-group-item-text"><small>Från {{ alert.senderName }}</small></p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script_area %}
+<script>
+
+    var map = L.map('mapid').setView([51.505, -0.09], 13);
+    L.tileLayer('http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        subdomains: 'abc',
+    }).addTo(map);
+
+    var all_polygons = [ ];
+    var alert_polygons = { };
+    var local_polygons = [ ];
+    {% for alert in alerts %}
+        local_polygons = [ ];
+        {% for polygon in alert.polygons %}
+            var polygon = L.polygon(
+                {{ polygon }},
+                {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5
+                }
+            ).addTo(map);
+            local_polygons.push(polygon);
+            all_polygons.push(polygon);
+        {% endfor %}
+        alert_polygons['alert-{{ alert.id }}'] = local_polygons;
+        $('#alert-{{ alert.id }}').mouseover(function() {
+            var group = new L.featureGroup(alert_polygons['alert-{{ alert.id }}']);
+            console.log(group);
+            map.fitBounds(group.getBounds());
+        });
+    {% endfor %}
+
+    var features = new L.featureGroup(all_polygons);
+    map.fitBounds(features.getBounds());
+
+</script>
+
+{% endblock %}
